@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#007bff">
+    <title>NearSnap - Видеочат для геймеров</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="images/nearsap-logo.svg" type="image/svg+xml">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%2300D4FF'/><stop offset='50%25' style='stop-color:%235B73FF'/><stop offset='100%25' style='stop-color:%239C27B0'/></linearGradient></defs><path d='M20 25 C20 15, 30 5, 45 5 L70 5 C85 5, 95 15, 95 25 L95 50 C95 60, 85 70, 70 70 L45 70 C35 70, 25 60, 25 50 L25 35 C25 30, 30 25, 35 25 L20 25 Z' fill='url(%23g)'/></svg>" type="image/svg+xml">
+</head>
+<body class="theme-default">
+    <!-- Экран входа -->
+    <div id="loginScreen" class="screen active">
+        <div class="login-container">
+            <div class="logo">
+                <div class="logo-container">
+                    <img src="images/nearsap-logo.svg" alt="NearSap" class="logo-image">
+                    <h1>NearSap</h1>
+                </div>
+                <p>Видеочат для геймеров</p>
+            </div>
+            
+            <div class="login-form">
+                <input type="text" id="nicknameInput" placeholder="Введите ваш никнейм" maxlength="20" required>
+                <input type="text" id="roomIdInput" placeholder="ID комнаты (оставьте пустым для создания новой)" maxlength="50">
+                <button id="joinBtn" class="btn-primary" disabled>Присоединиться</button>
+            </div>
+            
+            <div class="theme-selector">
+                <label>Тема:</label>
+                <select id="themeSelect">
+                    <option value="theme-default">По умолчанию</option>
+                    <option value="theme-dark">Темная</option>
+                    <option value="theme-gaming">Игровая</option>
+                    <option value="theme-neon">Неон</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основной экран видеочата -->
+    <div id="videoScreen" class="screen">
+        <!-- Заголовок с информацией о комнате -->
+        <div class="header">
+            <div class="room-info">
+                <div class="header-logo">
+                    <img src="images/nearsap-logo.svg" alt="NearSap" class="header-logo-image">
+                </div>
+                <div class="room-details">
+                    <span id="roomIdDisplay">Комната: </span>
+                    <span id="hostIndicator"></span>
+                </div>
+                <div id="networkStatus" class="network-status" title="Состояние сети">
+                    <span class="network-icon">📶</span>
+                    <span class="network-text">Проверка...</span>
+                </div>
+            </div>
+            <div class="header-controls">
+                <!-- Переключатель режимов отображения -->
+                <div class="layout-switcher">
+                    <button id="gridViewBtn" class="layout-btn active" title="Сетка">
+                        <span class="layout-icon">⊞</span>
+                    </button>
+                    <button id="speakerViewBtn" class="layout-btn" title="Режим докладчика">
+                        <span class="layout-icon">⊡</span>
+                    </button>
+                    <button id="fullscreenBtn" class="layout-btn" title="Полный экран">
+                        <span class="layout-icon">⛶</span>
+                    </button>
+                </div>
+                <button id="themeToggle" class="btn-icon" title="Сменить тему">🎨</button>
+                <button id="settingsBtn" class="btn-icon" title="Настройки">⚙️</button>
+                <button id="leaveBtn" class="btn-danger">Покинуть</button>
+            </div>
+        </div>
+
+        <!-- Основная область с видео -->
+        <div class="main-content">
+            <!-- Сетка видео -->
+            <div class="video-container">
+                <!-- Режим сетки -->
+                <div id="videoGrid" class="video-grid grid-view">
+                    <!-- Локальное видео -->
+                    <div class="video-wrapper local-video" id="localVideoWrapper">
+                        <video id="localVideo" autoplay muted playsinline></video>
+                        <div class="video-overlay">
+                            <span class="nickname">Вы</span>
+                            <div class="video-controls">
+                                <button id="muteBtn" class="control-btn">🎤</button>
+                                <button id="videoBtn" class="control-btn">📹</button>
+                            </div>
+                        </div>
+                        <!-- Ползунок громкости (появляется при наведении) -->
+                        <div class="volume-control">
+                            <input type="range" class="volume-slider" min="0" max="200" value="100">
+                            <span class="volume-label">100%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Режим докладчика -->
+                <div id="speakerView" class="speaker-view" style="display: none;">
+                    <div class="main-speaker">
+                        <div id="mainSpeakerVideo" class="main-video-wrapper">
+                            <!-- Основное видео будет клонировано сюда -->
+                        </div>
+                    </div>
+                    <div class="participants-strip">
+                        <div id="participantsThumbnails" class="thumbnails-container">
+                            <!-- Миниатюры участников -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Боковая панель с чатом -->
+            <div class="sidebar">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h3>Чат</h3>
+                        <button id="toggleChat" class="btn-icon">💬</button>
+                    </div>
+                    <div id="chatMessages" class="chat-messages"></div>
+                    <div class="chat-input">
+                        <input type="text" id="messageInput" placeholder="Введите сообщение..." maxlength="500">
+                        <button id="sendBtn" class="btn-primary">Отправить</button>
+                    </div>
+                </div>
+
+                <!-- Список участников -->
+                <div class="participants-container">
+                    <div class="participants-header">
+                        <h3>Участники</h3>
+                        <span id="participantCount">0</span>
+                    </div>
+                    <div id="participantsList" class="participants-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Панель управления -->
+        <div class="controls-panel">
+            <div class="controls-group">
+                <button id="micToggle" class="control-btn" title="Микрофон (Ctrl+M)">
+                    <span class="icon">🎤</span>
+                    <span class="label">Микрофон</span>
+                </button>
+                <button id="cameraToggle" class="control-btn" title="Камера (Ctrl+V)">
+                    <span class="icon">📹</span>
+                    <span class="label">Камера</span>
+                </button>
+                <button id="screenShare" class="control-btn" title="Демонстрация экрана (Ctrl+S)">
+                    <span class="icon">🖥️</span>
+                    <span class="label">Экран</span>
+                </button>
+                <button id="fullscreenToggle" class="control-btn" title="Полный экран (F11)">
+                    <span class="icon">⛶</span>
+                    <span class="label">Полный экран</span>
+                </button>
+                <button id="settingsToggle" class="control-btn" title="Настройки">
+                    <span class="icon">⚙️</span>
+                    <span class="label">Настройки</span>
+                </button>
+            </div>
+            
+            <!-- Админ панель (показывается только хосту) -->
+            <div id="adminPanel" class="admin-panel" style="display: none;">
+                <h4>Управление комнатой</h4>
+                <div class="admin-controls">
+                    <button id="muteAllBtn" class="btn-warning">Заглушить всех</button>
+                    <button id="roomLockBtn" class="btn-secondary">Заблокировать комнату</button>
+                    <button id="nudgeAllBtn" class="btn-info">Постучать всем</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальные окна -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⚙️ Настройки</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-tabs">
+                    <button class="tab-btn active" data-tab="devices">Устройства</button>
+                    <button class="tab-btn" data-tab="quality">Качество</button>
+                    <button class="tab-btn" data-tab="audio">Звук</button>
+                    <button class="tab-btn" data-tab="appearance">Внешний вид</button>
+                </div>
+                
+                <div class="tab-content">
+                    <!-- Вкладка устройств -->
+                    <div id="devices-tab" class="tab-panel active">
+                        <div class="setting-group">
+                            <label>📹 Камера:</label>
+                            <select id="cameraSelect">
+                                <option value="">Загрузка...</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label>🎤 Микрофон:</label>
+                            <select id="microphoneSelect">
+                                <option value="">Загрузка...</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label>🔊 Динамики:</label>
+                            <select id="speakerSelect">
+                                <option value="">Загрузка...</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Вкладка качества -->
+                    <div id="quality-tab" class="tab-panel">
+                        <div class="setting-group">
+                            <label>📺 Разрешение видео:</label>
+                            <select id="videoQuality">
+                                <option value="1080p">Full HD (1080p)</option>
+                                <option value="720p" selected>HD (720p)</option>
+                                <option value="480p">SD (480p)</option>
+                                <option value="360p">Low (360p)</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label>🎞️ Частота кадров:</label>
+                            <select id="frameRate">
+                                <option value="60">60 FPS</option>
+                                <option value="30" selected>30 FPS</option>
+                                <option value="15">15 FPS</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label>📊 Битрейт:</label>
+                            <select id="bitrate">
+                                <option value="high">Высокий</option>
+                                <option value="medium" selected>Средний</option>
+                                <option value="low">Низкий</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Вкладка звука -->
+                    <div id="audio-tab" class="tab-panel">
+                        <div class="setting-group">
+                            <label>🔇 Подавление шума:</label>
+                            <input type="checkbox" id="noiseSuppression" checked>
+                            <span class="checkbox-label">Включено</span>
+                        </div>
+                        <div class="setting-group">
+                            <label>📢 Подавление эха:</label>
+                            <input type="checkbox" id="echoCancellation" checked>
+                            <span class="checkbox-label">Включено</span>
+                        </div>
+                        <div class="setting-group">
+                            <label>🎚️ Автоматическая регулировка громкости:</label>
+                            <input type="checkbox" id="autoGainControl" checked>
+                            <span class="checkbox-label">Включено</span>
+                        </div>
+                        <div class="setting-group">
+                            <label>🔊 Громкость звуковых эффектов:</label>
+                            <input type="range" id="soundVolume" min="0" max="100" value="50">
+                            <span id="soundVolumeValue">50%</span>
+                        </div>
+                        <div class="setting-group">
+                            <label>🔔 Уведомления браузера:</label>
+                            <input type="checkbox" id="browserNotifications">
+                            <span class="checkbox-label">Включено</span>
+                            <button id="requestNotificationPermission" class="btn-secondary btn-small">Разрешить</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Вкладка внешнего вида -->
+                    <div id="appearance-tab" class="tab-panel">
+                        <div class="setting-group">
+                            <label>🔍 Масштаб интерфейса:</label>
+                            <select id="uiScale">
+                                <option value="0.8">Мелкий (80%)</option>
+                                <option value="1.0" selected>Обычный (100%)</option>
+                                <option value="1.2">Крупный (120%)</option>
+                                <option value="1.4">Очень крупный (140%)</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label>🖼️ Виртуальный фон:</label>
+                            <select id="virtualBackground">
+                                <option value="none">Без фона</option>
+                                <option value="blur">Размытие</option>
+                                <option value="office">Офис</option>
+                                <option value="nature">Природа</option>
+                                <option value="space">Космос</option>
+                                <option value="custom">Загрузить свой</option>
+                            </select>
+                            <input type="file" id="customBackground" accept="image/*" style="display: none;">
+                        </div>
+                        <div class="setting-group">
+                            <label>🎨 Цветовая схема:</label>
+                            <select id="colorScheme">
+                                <option value="auto">Автоматически</option>
+                                <option value="light">Светлая</option>
+                                <option value="dark">Темная</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label>📱 Компактный режим:</label>
+                            <input type="checkbox" id="compactMode">
+                            <span class="checkbox-label">Включен</span>
+                        </div>
+                        <div class="setting-group">
+                            <label>🎭 Показывать аватары:</label>
+                            <input type="checkbox" id="showAvatars" checked>
+                            <span class="checkbox-label">Включено</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button id="resetSettings" class="btn-secondary">Сбросить</button>
+                    <button id="applySettings" class="btn-primary">Применить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Контекстное меню участника -->
+    <div id="participantContextMenu" class="context-menu">
+        <div class="context-menu-item" data-action="kick">
+            <span class="menu-icon">❌</span>
+            <span class="menu-text">Исключить</span>
+        </div>
+        <div class="context-menu-item" data-action="mute-local">
+            <span class="menu-icon">🔇</span>
+            <span class="menu-text">Заглушить локально</span>
+        </div>
+        <div class="context-menu-item" data-action="private-message">
+            <span class="menu-icon">💬</span>
+            <span class="menu-text">Личное сообщение</span>
+        </div>
+    </div>
+
+    <!-- Уведомления -->
+    <div id="notifications" class="notifications"></div>
+
+    <!-- Подключение Socket.IO и основного скрипта -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/utils.js"></script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

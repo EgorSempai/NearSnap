@@ -1,0 +1,2645 @@
+/* CSS Variables для тем */
+:root {
+  /* Цвета по умолчанию */
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #17a2b8;
+  
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --text-muted: #868e96;
+  
+  --border-color: #dee2e6;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+/* Темная тема */
+.theme-dark {
+  --primary-color: #0d6efd;
+  --secondary-color: #6c757d;
+  --success-color: #198754;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #0dcaf0;
+  
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --bg-tertiary: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --text-muted: #888888;
+  
+  --border-color: #404040;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --glass-bg: rgba(0, 0, 0, 0.3);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Игровая тема */
+.theme-gaming {
+  --primary-color: #ff6b35;
+  --secondary-color: #4a4a4a;
+  --success-color: #00ff88;
+  --danger-color: #ff3333;
+  --warning-color: #ffaa00;
+  --info-color: #00aaff;
+  
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a1a2e;
+  --bg-tertiary: #16213e;
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+  --text-muted: #999999;
+  
+  --border-color: #ff6b35;
+  --shadow-color: rgba(255, 107, 53, 0.2);
+  --glass-bg: rgba(26, 26, 46, 0.4);
+  --glass-border: rgba(255, 107, 53, 0.3);
+}
+
+/* Неоновая тема */
+.theme-neon {
+  --primary-color: #00ffff;
+  --secondary-color: #ff00ff;
+  --success-color: #00ff00;
+  --danger-color: #ff0040;
+  --warning-color: #ffff00;
+  --info-color: #8000ff;
+  
+  --bg-primary: #000011;
+  --bg-secondary: #001122;
+  --bg-tertiary: #002233;
+  --text-primary: #00ffff;
+  --text-secondary: #ff00ff;
+  --text-muted: #888888;
+  
+  --border-color: #00ffff;
+  --shadow-color: rgba(0, 255, 255, 0.3);
+  --glass-bg: rgba(0, 17, 34, 0.4);
+  --glass-border: rgba(0, 255, 255, 0.3);
+}
+
+/* Базовые стили */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  /* Улучшения для мобильных */
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Экраны */
+.screen {
+  display: none !important;
+  min-height: 100vh;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.screen.active {
+  display: block !important;
+  position: fixed;
+  z-index: 10;
+}
+
+/* Экран входа */
+#loginScreen {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
+  z-index: 5;
+}
+
+#loginScreen:not(.active) {
+  display: none !important;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.login-container {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 8px 32px var(--shadow-color);
+  max-width: 400px;
+  width: 90%;
+  margin: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.logo-image {
+  width: 60px;
+  height: 60px;
+  filter: drop-shadow(0 4px 12px rgba(0, 212, 255, 0.3));
+  animation: logoGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes logoGlow {
+  0% {
+    filter: drop-shadow(0 4px 12px rgba(0, 212, 255, 0.3));
+  }
+  100% {
+    filter: drop-shadow(0 4px 20px rgba(91, 115, 255, 0.5));
+  }
+}
+
+.logo h1 {
+  font-size: 2.5rem;
+  margin: 0;
+  background: linear-gradient(45deg, #00D4FF, #5B73FF, #9C27B0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+
+.logo p {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.login-form input {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(5px);
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.login-form input::placeholder {
+  color: var(--text-muted);
+}
+
+.login-form input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(var(--primary-color), 0.2);
+}
+
+/* Кнопки */
+.btn-primary, .btn-danger, .btn-warning, .btn-icon {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--primary-color), 0.3);
+}
+
+.btn-primary:disabled {
+  background: var(--text-muted);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-danger {
+  background: var(--danger-color);
+  color: white;
+}
+
+.btn-warning {
+  background: var(--warning-color);
+  color: var(--text-primary);
+}
+
+.btn-icon {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 0.5rem;
+  min-width: 40px;
+}
+
+/* Селектор темы */
+.theme-selector {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.theme-selector select {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* Основной экран видеочата */
+#videoScreen {
+  display: none;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: var(--bg-primary);
+  z-index: 10;
+}
+
+#videoScreen.active {
+  display: flex !important;
+}
+
+/* Заголовок */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.room-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 600;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+}
+
+.header-logo-image {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 2px 8px rgba(0, 212, 255, 0.3));
+}
+
+.room-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.room-details span {
+  font-size: 0.9rem;
+}
+
+.header-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Индикатор состояния сети */
+.network-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+}
+
+.network-status.excellent {
+  background: rgba(40, 167, 69, 0.2);
+  color: var(--success-color);
+}
+
+.network-status.good {
+  background: rgba(255, 193, 7, 0.2);
+  color: var(--warning-color);
+}
+
+.network-status.poor {
+  background: rgba(220, 53, 69, 0.2);
+  color: var(--danger-color);
+}
+
+.network-icon {
+  font-size: 1rem;
+}
+
+/* Переключатель режимов отображения */
+.layout-switcher {
+  display: flex;
+  background: var(--glass-bg);
+  border-radius: 8px;
+  padding: 0.25rem;
+  border: 1px solid var(--glass-border);
+}
+
+.layout-btn {
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-secondary);
+}
+
+.layout-btn.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.layout-btn:hover:not(.active) {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.layout-icon {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* Основной контент */
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Контейнер видео */
+.video-container {
+  flex: 1;
+  padding: 1rem;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-grid {
+  display: grid;
+  gap: 1rem;
+  height: 100%;
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-auto-rows: minmax(250px, 1fr);
+  align-content: center;
+  justify-content: center;
+}
+
+/* Адаптивная сетка */
+@media (max-width: 768px) {
+  .video-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+  
+  .video-grid.layout-1 .video-wrapper {
+    height: 50vh;
+    min-height: 300px;
+  }
+  
+  .video-grid.layout-2 .video-wrapper,
+  .video-grid.layout-3-4 .video-wrapper,
+  .video-grid.layout-5-6 .video-wrapper {
+    height: 40vh;
+    min-height: 250px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  .video-grid:not(.layout-1) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1201px) {
+  .video-grid:not(.layout-1):not(.layout-2) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  /* Основные экраны */
+  #loginScreen {
+    padding: 1rem;
+  }
+  
+  .login-container {
+    width: 95%;
+    max-width: none;
+    padding: 1.5rem;
+  }
+  
+  .logo h1 {
+    font-size: 2rem;
+  }
+  
+  .logo-image {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .logo-container {
+    gap: 0.75rem;
+  }
+
+  /* Заголовок видеочата */
+  .header {
+    padding: 0.75rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .header-logo-image {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .room-details span {
+    font-size: 0.8rem;
+  }
+
+  .header-controls {
+    gap: 0.25rem;
+  }
+
+  .layout-switcher {
+    padding: 0.15rem;
+  }
+
+  .layout-btn {
+    padding: 0.4rem;
+    min-width: 36px;
+    height: 36px;
+  }
+
+  .layout-icon {
+    font-size: 1rem;
+  }
+
+  /* Основной контент - вертикальная компоновка */
+  .main-content {
+    flex-direction: column;
+    height: calc(100vh - 60px - 120px); /* Высота - заголовок - панель управления */
+  }
+  
+  /* Видео контейнер */
+  .video-container {
+    flex: 1;
+    padding: 0.5rem;
+    min-height: 60vh;
+  }
+
+  .video-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 0;
+    height: 100%;
+  }
+  
+  .video-grid.layout-1 .video-wrapper {
+    height: 100%;
+    min-height: 300px;
+    max-height: 50vh;
+  }
+  
+  .video-grid.layout-2 .video-wrapper,
+  .video-grid.layout-3-4 .video-wrapper,
+  .video-grid.layout-5-6 .video-wrapper {
+    height: 200px;
+    min-height: 180px;
+  }
+
+  /* Боковая панель - теперь снизу */
+  .sidebar {
+    width: 100%;
+    height: 40vh;
+    max-height: 300px;
+    border-left: none;
+    border-top: 1px solid var(--glass-border);
+    order: 2;
+  }
+
+  .sidebar.hidden {
+    height: 0;
+    min-height: 0;
+    overflow: hidden;
+    transition: height 0.3s ease;
+  }
+
+  /* Чат */
+  .chat-container {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .chat-messages {
+    max-height: 150px;
+    padding: 0.5rem;
+  }
+
+  .chat-input {
+    padding: 0.5rem;
+    gap: 0.25rem;
+  }
+
+  .chat-input input {
+    padding: 0.75rem;
+    font-size: 16px; /* Предотвращает зум на iOS */
+  }
+
+  .chat-input button {
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+  }
+
+  /* Список участников */
+  .participants-container {
+    padding: 0.5rem;
+    max-height: 120px;
+    overflow-y: auto;
+  }
+
+  .participant-item {
+    padding: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .participant-name {
+    font-size: 0.9rem;
+  }
+
+  .participant-time {
+    font-size: 0.7rem;
+  }
+
+  .status-icon {
+    width: 14px;
+    height: 14px;
+    font-size: 8px;
+  }
+
+  /* Панель управления */
+  .controls-panel {
+    padding: 0.75rem;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--glass-border);
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+  }
+
+  .controls-group {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .control-btn {
+    width: auto;
+    height: 60px;
+    padding: 0.5rem;
+    border-radius: 12px;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+    font-size: 0.75rem;
+  }
+
+  .control-btn .icon {
+    font-size: 1.25rem;
+  }
+
+  .control-btn .label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1;
+  }
+
+  /* Админ панель */
+  .admin-panel {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .admin-panel h4 {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .admin-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .admin-controls button {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  /* Саундборд */
+  .soundboard-panel {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .soundboard-panel h4 {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .soundboard-buttons {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .sound-btn {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  /* Модальные окна */
+  .modal-content {
+    margin: 1rem;
+    width: calc(100% - 2rem);
+    max-height: 90vh;
+  }
+  
+  .settings-tabs {
+    flex-direction: column;
+  }
+  
+  .tab-btn {
+    text-align: left;
+    padding: 0.75rem;
+  }
+  
+  .modal-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .modal-footer button {
+    width: 100%;
+  }
+
+  /* Уведомления */
+  .notifications {
+    top: 0.5rem;
+    right: 0.5rem;
+    left: 0.5rem;
+  }
+
+  .notification {
+    max-width: none;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Полноэкранный режим на мобильных */
+  .fullscreen-mode .exit-fullscreen,
+  .fullscreen-mode .fullscreen-chat-toggle {
+    width: 44px;
+    height: 44px;
+    font-size: 1.1rem;
+  }
+
+  .fullscreen-mode .exit-fullscreen {
+    top: 15px;
+    right: 15px;
+  }
+
+  .fullscreen-mode .fullscreen-chat-toggle {
+    top: 70px;
+    right: 15px;
+  }
+
+  /* Индикаторы печати */
+  .typing-badge {
+    top: 5px;
+    left: 5px;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.7rem;
+  }
+  
+  .typing-indicator {
+    padding: 0.4rem 0.8rem;
+    margin-bottom: 0.3rem;
+    font-size: 0.8rem;
+  }
+
+  /* Контекстное меню */
+  .context-menu {
+    min-width: 160px;
+  }
+
+  .context-menu-item {
+    padding: 0.75rem;
+  }
+
+  /* Улучшения для сенсорного управления */
+  .btn-primary, .btn-danger, .btn-warning, .btn-icon {
+    min-height: 44px; /* Минимальный размер для сенсорного управления */
+    touch-action: manipulation; /* Убирает задержку клика */
+  }
+
+  /* Скрытие элементов на очень маленьких экранах */
+  @media (max-width: 480px) {
+    .network-status {
+      display: none;
+    }
+    
+    .header-controls .btn-icon:not(:last-child) {
+      display: none;
+    }
+    
+    .controls-group {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .control-btn:last-child {
+      grid-column: span 2;
+    }
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  .video-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .sidebar {
+    width: 300px;
+  }
+}
+
+@media (min-width: 1201px) {
+  .video-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Видео элементы */
+.video-wrapper {
+  position: relative;
+  background: var(--bg-tertiary);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px var(--shadow-color);
+  border: 2px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-wrapper.local-video {
+  border-color: var(--primary-color);
+}
+
+.video-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 13px;
+}
+
+.video-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nickname {
+  color: white;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.video-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.control-btn {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-primary);
+}
+
+.control-btn:hover {
+  transform: scale(1.1);
+  background: var(--primary-color);
+  color: white;
+}
+
+.control-btn.muted {
+  background: var(--danger-color);
+  color: white;
+}
+
+/* Боковая панель */
+.sidebar {
+  width: 350px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border-left: 1px solid var(--glass-border);
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  .sidebar {
+    width: 300px;
+  }
+}
+
+/* Чат */
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.chat-header {
+  padding: 1rem;
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+.chat-message {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border-radius: 10px;
+  background: var(--bg-secondary);
+}
+
+.chat-message.own {
+  background: var(--primary-color);
+  color: white;
+  margin-left: 2rem;
+}
+
+.chat-message.system {
+  background: var(--info-color);
+  color: white;
+  text-align: center;
+  font-style: italic;
+}
+
+.message-author {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.message-time {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  float: right;
+}
+
+.chat-input {
+  padding: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* Список участников с иконками статуса */
+.participants-container {
+  padding: 1rem;
+}
+
+.participants-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.participants-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.participant-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.participant-item:hover {
+  background: var(--bg-tertiary);
+  transform: translateX(2px);
+}
+
+.participant-item.host {
+  border-left: 3px solid var(--primary-color);
+}
+
+.participant-item.current-user {
+  border-left: 3px solid var(--success-color);
+}
+
+.participant-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.participant-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.participant-status {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.status-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  transition: all 0.3s ease;
+}
+
+.status-icon.mic-on {
+  background: var(--success-color);
+  color: white;
+}
+
+.status-icon.mic-off {
+  background: var(--danger-color);
+  color: white;
+}
+
+.status-icon.cam-on {
+  background: var(--info-color);
+  color: white;
+}
+
+.status-icon.cam-off {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.participant-actions {
+  display: flex;
+  gap: 0.25rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.participant-item:hover .participant-actions {
+  opacity: 1;
+}
+
+.participant-actions button {
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+}
+
+/* Контекстное меню */
+.context-menu {
+  position: fixed;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px var(--shadow-color);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  min-width: 180px;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.context-menu.show {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: all;
+}
+
+.context-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.context-menu-item:last-child {
+  border-bottom: none;
+}
+
+.context-menu-item:hover {
+  background: var(--bg-secondary);
+}
+
+.menu-icon {
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
+}
+
+.menu-text {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+/* Улучшенное модальное окно настроек */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  z-index: 1500;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: var(--bg-primary);
+  border-radius: 15px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: 0 10px 40px var(--shadow-color);
+  border: 1px solid var(--border-color);
+}
+
+.modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--glass-bg);
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0.25rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+  background: var(--danger-color);
+  color: white;
+}
+
+.modal-body {
+  padding: 0;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* Вкладки настроек */
+.settings-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  margin: 0;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 1rem;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  font-size: 0.9rem;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-btn.active {
+  color: var(--primary-color);
+  background: var(--bg-primary);
+  border-bottom-color: var(--primary-color);
+}
+
+.tab-btn:hover:not(.active) {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.tab-content {
+  padding: 1.5rem;
+  min-height: 300px;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+.setting-group {
+  margin-bottom: 1.5rem;
+}
+
+.setting-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.setting-group select,
+.setting-group input[type="range"] {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.setting-group select:focus,
+.setting-group input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(var(--primary-color), 0.2);
+}
+
+.setting-group input[type="checkbox"] {
+  margin-right: 0.5rem;
+  transform: scale(1.2);
+}
+
+.checkbox-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.setting-group input[type="range"] {
+  padding: 0;
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.setting-group input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.setting-group input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  background: var(--bg-secondary);
+}
+
+.modal-footer button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: var(--text-secondary);
+  transform: translateY(-1px);
+}
+
+/* Адаптивность для модальных окон */
+@media (max-width: 768px) {
+  .modal-content {
+    margin: 1rem;
+    width: calc(100% - 2rem);
+    max-height: 90vh;
+  }
+  
+  .settings-tabs {
+    flex-direction: column;
+  }
+  
+  .tab-btn {
+    text-align: left;
+  }
+  
+  .modal-footer {
+    flex-direction: column;
+  }
+  
+  .modal-footer button {
+    width: 100%;
+  }
+}
+
+/* Панель управления */
+.controls-panel {
+  padding: 1rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--glass-border);
+}
+
+.controls-group {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.controls-group .control-btn {
+  width: auto;
+  height: auto;
+  padding: 1rem;
+  border-radius: 15px;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 80px;
+}
+
+.control-btn .icon {
+  font-size: 1.5rem;
+}
+
+.control-btn .label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Админ панель */
+.admin-panel {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.admin-panel h4 {
+  margin-bottom: 1rem;
+  color: var(--warning-color);
+}
+
+.admin-controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Улучшенные модальные окна */
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2000;
+  pointer-events: none;
+}
+
+.custom-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.custom-modal.show {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: all;
+}
+
+.modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+}
+
+.custom-modal .modal-content {
+  background: var(--bg-primary);
+  border-radius: 20px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 60px var(--shadow-color);
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.modal-icon {
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--glass-bg);
+}
+
+.modal-title {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-message {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.modal-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.modal-btn.btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.modal-btn.btn-secondary {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.modal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+/* Типы модальных окон */
+.custom-modal.error .modal-icon {
+  background: rgba(220, 53, 69, 0.1);
+  color: var(--danger-color);
+}
+
+.custom-modal.warning .modal-icon {
+  background: rgba(255, 193, 7, 0.1);
+  color: var(--warning-color);
+}
+
+.custom-modal.success .modal-icon {
+  background: rgba(40, 167, 69, 0.1);
+  color: var(--success-color);
+}
+
+.custom-modal.info .modal-icon {
+  background: rgba(23, 162, 184, 0.1);
+  color: var(--info-color);
+}
+
+.custom-modal.question .modal-icon {
+  background: rgba(108, 117, 125, 0.1);
+  color: var(--secondary-color);
+}
+
+/* Кнопки удаленного управления */
+.mute-remote-btn {
+  background: var(--warning-color);
+  color: var(--text-primary);
+}
+
+.mute-remote-btn:hover {
+  background: var(--warning-color);
+  box-shadow: 0 0 15px var(--warning-color);
+}
+
+/* Адаптивность для модальных окон */
+@media (max-width: 768px) {
+  .custom-modal .modal-content {
+    margin: 1rem;
+    width: calc(100% - 2rem);
+  }
+  
+  .modal-footer {
+    flex-direction: column;
+  }
+  
+  .modal-btn {
+    width: 100%;
+  }
+}
+
+/* Уведомления */
+.notifications {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.notification {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 1rem;
+  color: var(--text-primary);
+  box-shadow: 0 4px 20px var(--shadow-color);
+  animation: slideIn 0.3s ease;
+  max-width: 300px;
+}
+
+.notification.success {
+  border-left: 4px solid var(--success-color);
+}
+
+.notification.error {
+  border-left: 4px solid var(--danger-color);
+}
+
+.notification.warning {
+  border-left: 4px solid var(--warning-color);
+}
+
+.notification.info {
+  border-left: 4px solid var(--info-color);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Скроллбары */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+}
+
+/* Анимации и эффекты */
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Анимации для видео элементов */
+.video-enter {
+  animation: videoEnter 0.5s ease;
+}
+
+.video-exit {
+  animation: videoExit 0.3s ease forwards;
+}
+
+@keyframes videoEnter {
+  from {
+    transform: scale(0) rotate(180deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes videoExit {
+  from {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+}
+
+/* Анимация сообщений чата */
+.slide-in {
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Эффект говорящего участника */
+.video-wrapper.speaking {
+  border-color: #ff6b35;
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.6);
+  animation: pulse-border 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-border {
+  0% {
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.6);
+    border-color: #ff6b35;
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 107, 53, 0.9);
+    border-color: #ff8c42;
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.6);
+    border-color: #ff6b35;
+  }
+}
+
+/* Ползунок громкости */
+.volume-control {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 0.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.video-wrapper:hover .volume-control {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.volume-slider {
+  width: 80px;
+  height: 4px;
+  background: var(--bg-tertiary);
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.volume-label {
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  min-width: 35px;
+}
+
+/* Анимация "постучать" */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake {
+  animation: shake 0.6s ease-in-out;
+}
+
+/* Масштабирование интерфейса */
+body.ui-scale-80 { 
+  zoom: 0.8; 
+}
+
+body.ui-scale-100 { 
+  zoom: 1.0; 
+}
+
+body.ui-scale-120 { 
+  zoom: 1.2; 
+}
+
+body.ui-scale-140 { 
+  zoom: 1.4; 
+}
+
+/* Альтернативный способ для браузеров, не поддерживающих zoom */
+@supports not (zoom: 1) {
+  body.ui-scale-80 { 
+    transform: scale(0.8); 
+    transform-origin: top left; 
+    width: 125%; 
+    height: 125%; 
+  }
+  
+  body.ui-scale-100 { 
+    transform: scale(1.0); 
+    transform-origin: top left; 
+    width: 100%; 
+    height: 100%; 
+  }
+  
+  body.ui-scale-120 { 
+    transform: scale(1.2); 
+    transform-origin: top left; 
+    width: 83.33%; 
+    height: 83.33%; 
+  }
+  
+  body.ui-scale-140 { 
+    transform: scale(1.4); 
+    transform-origin: top left; 
+    width: 71.43%; 
+    height: 71.43%; 
+  }
+}
+
+/* Компактный режим */
+.compact-mode .video-wrapper {
+  border-radius: 8px;
+}
+
+.compact-mode .video-overlay {
+  padding: 0.5rem;
+}
+
+.compact-mode .control-btn {
+  width: 30px;
+  height: 30px;
+  font-size: 0.8rem;
+}
+
+.compact-mode .sidebar {
+  width: 280px;
+}
+
+/* Виртуальные фоны */
+.video-wrapper.blur-background video {
+  filter: blur(10px);
+}
+
+.video-wrapper.custom-background {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Дополнительные кнопки */
+.btn-info {
+  background: var(--info-color);
+  color: white;
+}
+
+.btn-info:hover {
+  background: #138496;
+  transform: translateY(-1px);
+}
+
+.btn-small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  border-radius: 4px;
+}
+
+/* Полноэкранный режим */
+.fullscreen-mode {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+  background: #000 !important;
+}
+
+.fullscreen-mode .header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fullscreen-mode .controls-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fullscreen-mode .sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(15px);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+}
+
+.fullscreen-mode .sidebar.visible {
+  transform: translateX(0);
+}
+
+.fullscreen-mode .main-content {
+  height: 100vh;
+  padding: 0;
+}
+
+.fullscreen-mode .video-container {
+  padding: 0;
+  height: 100vh;
+}
+
+.fullscreen-mode .video-grid {
+  height: 100vh;
+  padding: 0;
+  gap: 0;
+}
+
+.fullscreen-mode .video-wrapper {
+  border-radius: 0;
+  border: none;
+  height: 100vh;
+}
+
+.fullscreen-mode .video-wrapper video {
+  border-radius: 0;
+}
+
+/* Автоскрытие в полноэкранном режиме */
+.fullscreen-mode.auto-hide .header,
+.fullscreen-mode.auto-hide .controls-panel {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+.fullscreen-mode.auto-hide .controls-panel {
+  transform: translateY(100%);
+}
+
+/* Индикатор полноэкранного режима */
+.fullscreen-indicator {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  z-index: 10001;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.fullscreen-indicator.show {
+  opacity: 1;
+}
+
+/* Кнопка выхода из полного экрана */
+.exit-fullscreen {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(220, 53, 69, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 10001;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.exit-fullscreen:hover {
+  background: rgba(220, 53, 69, 1);
+  transform: scale(1.1);
+}
+
+/* Кнопка переключения чата в полном экране */
+.fullscreen-chat-toggle {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background: rgba(0, 123, 255, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 10001;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fullscreen-chat-toggle:hover {
+  background: rgba(0, 123, 255, 1);
+  transform: scale(1.1);
+}
+
+/* Эффекты наведения для кнопок */
+.btn-primary:hover, .btn-danger:hover, .btn-warning:hover, .btn-icon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px var(--shadow-color);
+}
+
+.control-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px var(--primary-color);
+}
+
+.control-btn.muted:hover {
+  box-shadow: 0 0 15px var(--danger-color);
+}
+
+/* Адаптивные макеты для видео сетки */
+.video-grid.layout-1 {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+/* ============================================================================
+   НОВЫЕ СТИЛИ ДЛЯ ФУНКЦИЙ
+   ============================================================================ */
+
+/* Индикатор печати в чате */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-secondary);
+  border-radius: 15px;
+  margin-bottom: 0.5rem;
+  font-style: italic;
+  color: var(--text-secondary);
+  animation: slideIn 0.3s ease;
+}
+
+.typing-text {
+  font-size: 0.9rem;
+}
+
+.typing-dots {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.typing-dots .dot {
+  width: 4px;
+  height: 4px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  animation: typingDots 1.4s infinite ease-in-out;
+}
+
+.typing-dots .dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.typing-dots .dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes typingDots {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Индикатор печати на видео */
+.typing-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.typing-icon {
+  font-size: 1rem;
+}
+
+.typing-dots-small {
+  display: flex;
+  gap: 0.15rem;
+}
+
+.typing-dots-small .dot {
+  width: 3px;
+  height: 3px;
+  background: white;
+  border-radius: 50%;
+  animation: typingDots 1.4s infinite ease-in-out;
+}
+
+.typing-dots-small .dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.typing-dots-small .dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+/* Местное время участников */
+.participant-name-time {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.participant-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: normal;
+}
+
+.participant-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.typing-status {
+  background: var(--info-color);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Zen Mode - скрытие интерфейса */
+.zen-hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.5s ease;
+  pointer-events: none;
+}
+
+.zen-mode {
+  cursor: none;
+}
+
+.zen-mode * {
+  cursor: none !important;
+}
+
+/* Показываем курсор при наведении на интерактивные элементы в zen mode */
+.zen-mode .video-wrapper:hover,
+.zen-mode .sidebar:hover {
+  cursor: default !important;
+}
+
+.zen-mode .video-wrapper:hover *,
+.zen-mode .sidebar:hover * {
+  cursor: default !important;
+}
+
+/* Визуализатор шума - эффекты для громких звуков */
+.noise-shake {
+  animation: noiseShake 0.5s ease-in-out;
+}
+
+.noise-scale {
+  animation: noiseScale 0.3s ease-in-out;
+}
+
+.noise-pulse {
+  animation: noisePulse 0.2s ease-in-out;
+}
+
+@keyframes noiseShake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-3px) rotate(-1deg); }
+  20%, 40%, 60%, 80% { transform: translateX(3px) rotate(1deg); }
+}
+
+@keyframes noiseScale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes noisePulse {
+  0%, 100% { 
+    box-shadow: 0 4px 20px var(--shadow-color);
+    border-color: var(--glass-border);
+  }
+  50% { 
+    box-shadow: 0 4px 30px var(--primary-color);
+    border-color: var(--primary-color);
+  }
+}
+
+/* Улучшенные переходы для zen mode */
+.controls-panel,
+.header {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Адаптивность для новых элементов */
+@media (max-width: 768px) {
+  .participant-name-time {
+    gap: 0.05rem;
+  }
+  
+  .participant-time {
+    font-size: 0.7rem;
+  }
+  
+  .typing-badge {
+    top: 5px;
+    left: 5px;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.7rem;
+  }
+  
+  .typing-indicator {
+    padding: 0.4rem 0.8rem;
+    margin-bottom: 0.3rem;
+  }
+}
+
+/* Адаптивные макеты для видео сетки */
+.video-grid.layout-1 {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.video-grid.layout-1 .video-wrapper {
+  max-width: 800px;
+  width: 100%;
+  height: 60vh;
+  min-height: 400px;
+}
+
+.video-grid.layout-2 {
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.video-grid.layout-2 .video-wrapper {
+  height: 50vh;
+  min-height: 300px;
+}
+
+.video-grid.layout-3-4 {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.video-grid.layout-3-4 .video-wrapper {
+  height: 40vh;
+  min-height: 250px;
+}
+
+.video-grid.layout-5-6 {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.video-grid.layout-5-6 .video-wrapper {
+  height: 35vh;
+  min-height: 200px;
+}
+
+/* Режим сетки */
+.video-grid.grid-view {
+  display: grid;
+  gap: 1rem;
+  height: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-auto-rows: minmax(200px, 1fr);
+}
+
+/* Режим докладчика */
+.speaker-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 1rem;
+}
+
+.main-speaker {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-tertiary);
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.main-video-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: var(--bg-tertiary);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px var(--shadow-color);
+  border: 2px solid var(--primary-color);
+}
+
+.main-video-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.participants-strip {
+  height: 120px;
+  background: var(--glass-bg);
+  border-radius: 10px;
+  padding: 0.5rem;
+}
+
+.thumbnails-container {
+  display: flex;
+  gap: 0.5rem;
+  height: 100%;
+  overflow-x: auto;
+  padding: 0.25rem;
+}
+
+.thumbnail-wrapper {
+  min-width: 160px;
+  height: 90px;
+  position: relative;
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.thumbnail-wrapper:hover {
+  border-color: var(--primary-color);
+  transform: scale(1.05);
+}
+
+.thumbnail-wrapper.active-speaker {
+  border-color: var(--success-color);
+  box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+}
+
+.thumbnail-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnail-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  padding: 0.25rem;
+  font-size: 0.8rem;
+  color: white;
+}
+
+/* Саундборд */
+.soundboard-panel {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.soundboard-panel h4 {
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+.soundboard-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.sound-btn {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--primary-color);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.sound-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(var(--primary-color), 0.4);
+}
+
+.sound-btn:active {
+  transform: scale(0.95);
+}
+
+/* Скрытие чата на мобильных - уже включено в основной блок мобильных стилей */
+
+/* Улучшенные кнопки управления */
+.controls-group .control-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.controls-group .control-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.controls-group .control-btn:hover::before {
+  left: 100%;
+}
+
+/* Индикатор активности */
+.participant-item.speaking {
+  border-left: 3px solid var(--success-color);
+  background: rgba(40, 167, 69, 0.1);
+}
+
+/* Улучшенные уведомления */
+.notification {
+  position: relative;
+  overflow: hidden;
+}
+
+.notification::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--primary-color);
+}
+
+.notification.success::before {
+  background: var(--success-color);
+}
+
+.notification.error::before {
+  background: var(--danger-color);
+}
+
+.notification.warning::before {
+  background: var(--warning-color);
+}
+
+.notification.info::before {
+  background: var(--info-color);
+}
+
+/* Эффекты для тем */
+.theme-gaming .control-btn:hover {
+  box-shadow: 0 0 20px var(--primary-color);
+}
+
+.theme-neon .control-btn:hover {
+  box-shadow: 0 0 25px var(--primary-color);
+  text-shadow: 0 0 10px var(--primary-color);
+}
+
+.theme-neon .video-wrapper.speaking {
+  box-shadow: 0 0 30px var(--success-color);
+}
+
+/* Дополнительные кнопки */
+.btn-small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  border-radius: 4px;
+}
+
+.kick-btn {
+  background: var(--danger-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.kick-btn:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 10px var(--danger-color);
+}

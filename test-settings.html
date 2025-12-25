@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Settings - NearSap</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        .log { background: #f8f9fa; padding: 10px; margin: 10px 0; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Тест настроек NearSap</h1>
+    
+    <div class="test-section">
+        <h3>1. Тест переключения вкладок</h3>
+        <div class="settings-tabs">
+            <button class="tab-btn active" data-tab="devices">Устройства</button>
+            <button class="tab-btn" data-tab="quality">Качество</button>
+            <button class="tab-btn" data-tab="audio">Звук</button>
+            <button class="tab-btn" data-tab="appearance">Внешний вид</button>
+        </div>
+        <div class="tab-content">
+            <div id="devices-tab" class="tab-panel active">Содержимое вкладки Устройства</div>
+            <div id="quality-tab" class="tab-panel">Содержимое вкладки Качество</div>
+            <div id="audio-tab" class="tab-panel">Содержимое вкладки Звук</div>
+            <div id="appearance-tab" class="tab-panel">Содержимое вкладки Внешний вид</div>
+        </div>
+        <div id="tab-test-result" class="log">Результат теста появится здесь...</div>
+    </div>
+
+    <div class="test-section">
+        <h3>2. Тест масштабирования</h3>
+        <select id="uiScale">
+            <option value="0.8">Мелкий (80%)</option>
+            <option value="1.0" selected>Обычный (100%)</option>
+            <option value="1.2">Крупный (120%)</option>
+            <option value="1.4">Очень крупный (140%)</option>
+        </select>
+        <button onclick="testUIScale()">Применить масштаб</button>
+        <div id="scale-test-result" class="log">Результат теста появится здесь...</div>
+    </div>
+
+    <div class="test-section">
+        <h3>3. Тест виртуального фона</h3>
+        <select id="virtualBackground">
+            <option value="none">Без фона</option>
+            <option value="blur">Размытие</option>
+            <option value="office">Офис</option>
+            <option value="nature">Природа</option>
+            <option value="space">Космос</option>
+        </select>
+        <button onclick="testVirtualBackground()">Применить фон</button>
+        <div id="background-test-result" class="log">Результат теста появится здесь...</div>
+    </div>
+
+    <div class="test-section">
+        <h3>4. Тест сохранения настроек</h3>
+        <button onclick="testSettingsSave()">Сохранить тестовые настройки</button>
+        <button onclick="testSettingsLoad()">Загрузить настройки</button>
+        <div id="storage-test-result" class="log">Результат теста появится здесь...</div>
+    </div>
+
+    <script>
+        // Симуляция методов из WindowManager
+        function switchSettingsTab(tabName) {
+            console.log(`Переключение на вкладку: ${tabName}`);
+            
+            // Убираем активность со всех вкладок
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // Активируем нужную вкладку
+            const tabBtn = document.querySelector(`[data-tab="${tabName}"]`);
+            const tabPanel = document.getElementById(`${tabName}-tab`);
+            
+            if (tabBtn) {
+                tabBtn.classList.add('active');
+                console.log(`Кнопка вкладки ${tabName} активирована`);
+            } else {
+                console.warn(`Кнопка вкладки ${tabName} не найдена`);
+            }
+            
+            if (tabPanel) {
+                tabPanel.classList.add('active');
+                console.log(`Панель вкладки ${tabName} активирована`);
+            } else {
+                console.warn(`Панель вкладки ${tabName} не найдена`);
+            }
+
+            document.getElementById('tab-test-result').textContent = `✅ Вкладка "${tabName}" успешно активирована`;
+        }
+
+        function applyUIScale(scale) {
+            console.log(`Применение масштаба: ${scale}`);
+            
+            // Убираем все классы масштабирования
+            document.body.classList.remove('ui-scale-80', 'ui-scale-100', 'ui-scale-120', 'ui-scale-140');
+            
+            // Применяем новый масштаб
+            const scaleValue = parseFloat(scale);
+            
+            if (scaleValue === 0.8) {
+                document.body.classList.add('ui-scale-80');
+            } else if (scaleValue === 1.2) {
+                document.body.classList.add('ui-scale-120');
+            } else if (scaleValue === 1.4) {
+                document.body.classList.add('ui-scale-140');
+            } else {
+                document.body.classList.add('ui-scale-100');
+            }
+            
+            // Альтернативный метод для браузеров, поддерживающих zoom
+            if (CSS.supports('zoom', '1')) {
+                document.body.style.zoom = scale;
+            }
+            
+            console.log(`Применен масштаб: ${scale}`);
+            document.getElementById('scale-test-result').textContent = `✅ Масштаб ${Math.round(scaleValue * 100)}% успешно применен`;
+        }
+
+        function applyVirtualBackground(backgroundType) {
+            console.log('Применение виртуального фона:', backgroundType);
+            
+            const testDiv = document.getElementById('background-test-result');
+            testDiv.style.backgroundImage = '';
+            testDiv.style.filter = '';
+            
+            switch (backgroundType) {
+                case 'blur':
+                    testDiv.style.filter = 'blur(5px)';
+                    testDiv.textContent = '✅ Размытие применено';
+                    break;
+                    
+                case 'office':
+                    testDiv.style.backgroundImage = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                    testDiv.textContent = '✅ Офисный фон применен';
+                    break;
+                    
+                case 'nature':
+                    testDiv.style.backgroundImage = 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)';
+                    testDiv.textContent = '✅ Природный фон применен';
+                    break;
+                    
+                case 'space':
+                    testDiv.style.backgroundImage = 'linear-gradient(135deg, #000428 0%, #004e92 100%)';
+                    testDiv.textContent = '✅ Космический фон применен';
+                    break;
+                    
+                case 'none':
+                default:
+                    testDiv.textContent = '✅ Фон убран';
+                    break;
+            }
+        }
+
+        // Инициализация обработчиков событий
+        document.addEventListener('DOMContentLoaded', () => {
+            // Обработчики для вкладок
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabName = btn.dataset.tab;
+                    if (tabName) {
+                        switchSettingsTab(tabName);
+                    }
+                });
+            });
+
+            // Обработчик для масштаба
+            const uiScaleSelect = document.getElementById('uiScale');
+            if (uiScaleSelect) {
+                uiScaleSelect.addEventListener('change', (e) => {
+                    applyUIScale(e.target.value);
+                });
+            }
+
+            // Обработчик для виртуального фона
+            const virtualBackgroundSelect = document.getElementById('virtualBackground');
+            if (virtualBackgroundSelect) {
+                virtualBackgroundSelect.addEventListener('change', (e) => {
+                    applyVirtualBackground(e.target.value);
+                });
+            }
+
+            console.log('✅ Все обработчики событий инициализированы');
+        });
+
+        // Тестовые функции
+        function testUIScale() {
+            const scale = document.getElementById('uiScale').value;
+            applyUIScale(scale);
+        }
+
+        function testVirtualBackground() {
+            const background = document.getElementById('virtualBackground').value;
+            applyVirtualBackground(background);
+        }
+
+        function testSettingsSave() {
+            const testSettings = {
+                videoQuality: '720p',
+                frameRate: '30',
+                noiseSuppression: true,
+                echoCancellation: true,
+                autoGainControl: true,
+                soundVolume: '75',
+                uiScale: '1.2',
+                virtualBackground: 'blur'
+            };
+            
+            localStorage.setItem('nearsap-settings', JSON.stringify(testSettings));
+            document.getElementById('storage-test-result').textContent = '✅ Тестовые настройки сохранены в localStorage';
+        }
+
+        function testSettingsLoad() {
+            try {
+                const saved = localStorage.getItem('nearsap-settings');
+                if (saved) {
+                    const settings = JSON.parse(saved);
+                    document.getElementById('storage-test-result').textContent = `✅ Настройки загружены: ${JSON.stringify(settings, null, 2)}`;
+                } else {
+                    document.getElementById('storage-test-result').textContent = '⚠️ Сохраненные настройки не найдены';
+                }
+            } catch (error) {
+                document.getElementById('storage-test-result').textContent = `❌ Ошибка загрузки настроек: ${error.message}`;
+            }
+        }
+    </script>
+
+    <style>
+        .tab-btn {
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            background: #f8f9fa;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        
+        .tab-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        
+        .tab-panel {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+        
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* Масштабирование для теста */
+        body.ui-scale-80 { zoom: 0.8; }
+        body.ui-scale-100 { zoom: 1.0; }
+        body.ui-scale-120 { zoom: 1.2; }
+        body.ui-scale-140 { zoom: 1.4; }
+    </style>
+</body>
+</html>
