@@ -56,7 +56,11 @@ npm start
 
 #### Автоматическая установка (рекомендуется)
 ```bash
-# Скачайте проект и запустите скрипт установки
+# Клонируйте репозиторий
+git clone https://github.com/EgorSempai/NearSnap.git
+cd NearSnap
+
+# Запустите скрипт установки
 chmod +x ubuntu-install.sh
 ./ubuntu-install.sh
 ```
@@ -77,8 +81,8 @@ sudo apt install -y nodejs
 sudo npm install -g pm2
 
 # Клонирование и запуск
-git clone <your-repo-url> nearsap
-cd nearsap
+git clone https://github.com/EgorSempai/NearSnap.git nearsnap
+cd nearsnap
 npm install
 pm2 start ecosystem.config.js --env production
 

@@ -1,10 +1,10 @@
-# 🐧 Установка NearSap на Ubuntu Server
+# 🐧 Установка NearSnap на Ubuntu Server
 
 ## 🚀 Быстрая установка (одной командой)
 
 ```bash
 # Скачайте и запустите автоматический скрипт
-curl -fsSL https://raw.githubusercontent.com/your-repo/nearsap/main/deploy.sh | bash
+curl -fsSL https://raw.githubusercontent.com/EgorSempai/NearSnap/main/deploy.sh | bash
 ```
 
 ## 📋 Пошаговая установка
@@ -49,11 +49,11 @@ sudo pm2 startup
 # Переходим в домашнюю директорию
 cd ~
 
-# Клонируем репозиторий (замените на ваш URL)
-git clone https://github.com/your-username/nearsap.git
+# Клонируем репозиторий
+git clone https://github.com/EgorSempai/NearSnap.git
 
 # Переходим в папку проекта
-cd nearsap
+cd NearSnap
 ```
 
 ### 5. Установка зависимостей
