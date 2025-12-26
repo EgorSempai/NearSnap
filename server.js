@@ -19,9 +19,12 @@ const corsOrigins = process.env.CORS_ORIGINS
 
 const io = socketIo(server, {
   cors: {
-    origin: process.env.NODE_ENV === 'production' ? corsOrigins : "*",
-    methods: ["GET", "POST"]
-  }
+    origin: "*",
+    methods: ["GET", "POST"],
+    credentials: true
+  },
+  allowEIO3: true,
+  transports: ['websocket', 'polling']
 });
 
 // Хранение состояния в памяти
@@ -301,7 +304,7 @@ const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 
 server.listen(PORT, HOST, () => {
-  console.log(`🚀 NearSnap сервер запущен на ${HOST}:${PORT}`);
-  console.log(`📱 Откройте http://localhost:${PORT} в браузере`);
+  console.log(`🚀 Zloer сервер запущен на ${HOST}:${PORT}`);
+  console.log(`📱 Connect. Play. Zloer - Откройте http://localhost:${PORT} в браузере`);
   console.log(`🌍 Режим: ${process.env.NODE_ENV || 'development'}`);
 });

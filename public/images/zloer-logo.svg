@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="zloerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00D4FF"/>
+      <stop offset="50%" style="stop-color:#5B73FF"/>
+      <stop offset="100%" style="stop-color:#9C27B0"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="45" fill="url(#zloerGradient)" filter="url(#glow)"/>
+  
+  <!-- Embedded mascot image (placeholder - will be replaced with actual image) -->
+  <image href="zloer-mascot-original.png" x="10" y="10" width="80" height="80" clip-path="circle(35px at 50px 50px)"/>
+  
+  <!-- Tech circuit pattern overlay -->
+  <g opacity="0.3" stroke="#FFFFFF" stroke-width="0.5" fill="none">
+    <path d="M20,30 L30,30 L30,25 M70,30 L80,30 L80,25"/>
+    <path d="M20,70 L30,70 L30,75 M70,70 L80,70 L80,75"/>
+    <circle cx="25" cy="35" r="1" fill="#FFFFFF"/>
+    <circle cx="75" cy="35" r="1" fill="#FFFFFF"/>
+    <circle cx="25" cy="65" r="1" fill="#FFFFFF"/>
+    <circle cx="75" cy="65" r="1" fill="#FFFFFF"/>
+  </g>
+</svg>

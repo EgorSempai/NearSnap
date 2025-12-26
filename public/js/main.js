@@ -1,5 +1,5 @@
-// NearSap - Главный модуль видеочата для геймеров
-// Детальная реализация с классами и геймерскими фичами
+// Zloer - Главный модуль видеочата для геймеров
+// Connect. Play. Zloer - Детальная реализация с классами и геймерскими фичами
 
 const SOCKET_URL = '/';
 
@@ -8,7 +8,13 @@ const SOCKET_URL = '/';
 // ============================================================================
 class App {
   constructor() {
-    this.socket = io(SOCKET_URL);
+    // Инициализируем Socket.IO с лучшей обработкой ошибок
+    this.socket = io(SOCKET_URL, {
+      transports: ['websocket', 'polling'],
+      timeout: 20000,
+      forceNew: true
+    });
+    
     this.rtc = new WebRTCManager(this.socket);
     this.ui = new WindowManager(this);
     this.soundboard = new Soundboard(this.socket);
@@ -21,6 +27,24 @@ class App {
     
     this.initEvents();
     this.checkWebRTCSupport();
+    this.initSocketErrorHandling();
+  }
+
+  initSocketErrorHandling() {
+    this.socket.on('connect_error', (error) => {
+      console.error('Socket.IO connection error:', error);
+      this.ui.showNotification('Ошибка подключения к серверу', 'error');
+    });
+
+    this.socket.on('connect', () => {
+      console.log('Socket.IO connected successfully');
+      this.ui.showNotification('Подключение установлено', 'success');
+    });
+
+    this.socket.on('disconnect', (reason) => {
+      console.log('Socket.IO disconnected:', reason);
+      this.ui.showNotification('Соединение потеряно. Переподключение...', 'warning');
+    });
   }
 
   initEvents() {
@@ -211,11 +235,21 @@ class WebRTCManager {
     this.audioContext = null;
     this.audioAnalyser = null;
     
-    // STUN серверы
+    // STUN/TURN серверы
     this.rtcConfig = {
       iceServers: [
         { urls: 'stun:stun1.l.google.com:19302' },
-        { urls: 'stun:stun2.l.google.com:19302' }
+        { urls: 'stun:stun2.l.google.com:19302' },
+        { 
+          urls: 'turn:185.117.154.193:3478',
+          username: 'nearsnap',
+          credential: 'nearsnap123'
+        },
+        { 
+          urls: 'turns:185.117.154.193:5349',
+          username: 'nearsnap', 
+          credential: 'nearsnap123'
+        }
       ]
     };
 
@@ -277,6 +311,11 @@ class WebRTCManager {
   // Инициализация локального медиа-потока
   async initializeLocalStream() {
     try {
+      // Проверяем доступность getUserMedia
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('getUserMedia не поддерживается в этом браузере');
+      }
+
       const constraints = {
         video: { 
           width: { ideal: 1280 }, 
@@ -311,12 +350,68 @@ class WebRTCManager {
         errorMessage += 'Разрешите доступ к камере и микрофону в настройках браузера.';
       } else if (error.name === 'NotFoundError') {
         errorMessage += 'Камера или микрофон не найдены.';
+      } else if (error.name === 'NotSecureError' || error.message.includes('secure')) {
+        errorMessage += 'Для доступа к камере и микрофону требуется HTTPS соединение.';
       } else {
         errorMessage += 'Проверьте подключение устройств.';
       }
       
+      // Создаем фиктивный поток для продолжения работы без камеры/микрофона
+      this.createDummyStream();
+      
       alert(errorMessage);
       throw error;
+    }
+  }
+
+  // Создание фиктивного потока для работы без камеры/микрофона
+  createDummyStream() {
+    try {
+      // Создаем canvas для фиктивного видео
+      const canvas = document.createElement('canvas');
+      canvas.width = 640;
+      canvas.height = 480;
+      const ctx = canvas.getContext('2d');
+      
+      // Рисуем простой фон
+      ctx.fillStyle = '#2c3e50';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#ecf0f1';
+      ctx.font = '24px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('Камера недоступна', canvas.width / 2, canvas.height / 2);
+      
+      // Создаем поток из canvas
+      const videoStream = canvas.captureStream(15);
+      
+      // Создаем фиктивный аудио поток
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      gainNode.gain.value = 0; // Беззвучный
+      
+      const destination = audioContext.createMediaStreamDestination();
+      oscillator.connect(gainNode);
+      gainNode.connect(destination);
+      oscillator.start();
+      
+      // Объединяем потоки
+      const combinedStream = new MediaStream([
+        ...videoStream.getVideoTracks(),
+        ...destination.stream.getAudioTracks()
+      ]);
+      
+      this.localStream = combinedStream;
+      
+      // Отображаем фиктивное видео
+      const localVideo = document.getElementById('localVideo');
+      if (localVideo) {
+        localVideo.srcObject = combinedStream;
+      }
+      
+      console.log('Создан фиктивный поток для работы без камеры/микрофона');
+    } catch (error) {
+      console.error('Ошибка создания фиктивного потока:', error);
     }
   }
 
@@ -775,6 +870,10 @@ class WindowManager {
     this.isFullscreen = false;
     this.fullscreenAutoHideTimeout = null;
     
+    // Маскот
+    this.mascot = null;
+    this.mascotClickCount = 0;
+    
     this.initEventListeners();
     this.loadTheme();
     this.initPreJoinScreen();
@@ -788,6 +887,7 @@ class WindowManager {
     this.initNoiseVisualizer();
     this.initFullscreenMode();
     this.initMobileOptimizations();
+    this.initMascot();
   }
 
   initEventListeners() {
@@ -795,6 +895,11 @@ class WindowManager {
     const joinBtn = document.getElementById('joinBtn');
     const nicknameInput = document.getElementById('nicknameInput');
     const roomIdInput = document.getElementById('roomIdInput');
+
+    if (!joinBtn || !nicknameInput || !roomIdInput) {
+      console.error('Критические элементы формы входа не найдены');
+      return;
+    }
 
     // Кнопка активируется только после ввода никнейма
     nicknameInput.addEventListener('input', () => {
@@ -811,36 +916,53 @@ class WindowManager {
 
     // Селектор темы
     const themeSelect = document.getElementById('themeSelect');
-    themeSelect.addEventListener('change', (e) => {
-      this.changeTheme(e.target.value);
-    });
+    if (themeSelect) {
+      themeSelect.addEventListener('change', (e) => {
+        this.changeTheme(e.target.value);
+      });
+    }
 
-    // Кнопки управления
-    document.getElementById('micToggle').addEventListener('click', () => this.toggleMicrophone());
-    document.getElementById('cameraToggle').addEventListener('click', () => this.toggleCamera());
-    document.getElementById('screenShare').addEventListener('click', () => this.toggleScreenShare());
-    document.getElementById('fullscreenToggle').addEventListener('click', () => this.toggleFullscreen());
-    document.getElementById('leaveBtn').addEventListener('click', () => this.leaveRoom());
+    // Кнопки управления - добавляем проверки существования
+    const micToggle = document.getElementById('micToggle');
+    const cameraToggle = document.getElementById('cameraToggle');
+    const screenShare = document.getElementById('screenShare');
+    const fullscreenToggle = document.getElementById('fullscreenToggle');
+    const leaveBtn = document.getElementById('leaveBtn');
+
+    if (micToggle) micToggle.addEventListener('click', () => this.toggleMicrophone());
+    if (cameraToggle) cameraToggle.addEventListener('click', () => this.toggleCamera());
+    if (screenShare) screenShare.addEventListener('click', () => this.toggleScreenShare());
+    if (fullscreenToggle) fullscreenToggle.addEventListener('click', () => this.toggleFullscreen());
+    if (leaveBtn) leaveBtn.addEventListener('click', () => this.leaveRoom());
 
     // Настройки
-    document.getElementById('settingsToggle').addEventListener('click', () => this.openSettings());
-    document.getElementById('settingsBtn').addEventListener('click', () => this.openSettings());
+    const settingsToggle = document.getElementById('settingsToggle');
+    const settingsBtn = document.getElementById('settingsBtn');
+    
+    if (settingsToggle) settingsToggle.addEventListener('click', () => this.openSettings());
+    if (settingsBtn) settingsBtn.addEventListener('click', () => this.openSettings());
 
     // Переключатель режимов отображения
-    document.getElementById('gridViewBtn').addEventListener('click', () => this.switchLayout('grid'));
-    document.getElementById('speakerViewBtn').addEventListener('click', () => this.switchLayout('speaker'));
-    document.getElementById('fullscreenBtn').addEventListener('click', () => this.toggleFullscreen());
+    const gridViewBtn = document.getElementById('gridViewBtn');
+    const speakerViewBtn = document.getElementById('speakerViewBtn');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    
+    if (gridViewBtn) gridViewBtn.addEventListener('click', () => this.switchLayout('grid'));
+    if (speakerViewBtn) speakerViewBtn.addEventListener('click', () => this.switchLayout('speaker'));
+    if (fullscreenBtn) fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
 
     // Чат
     const sendBtn = document.getElementById('sendBtn');
     const messageInput = document.getElementById('messageInput');
     const toggleChat = document.getElementById('toggleChat');
     
-    sendBtn.addEventListener('click', () => this.sendMessage());
-    messageInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') this.sendMessage();
-    });
-    toggleChat.addEventListener('click', () => this.toggleChatVisibility());
+    if (sendBtn) sendBtn.addEventListener('click', () => this.sendMessage());
+    if (messageInput) {
+      messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') this.sendMessage();
+      });
+    }
+    if (toggleChat) toggleChat.addEventListener('click', () => this.toggleChatVisibility());
 
     // Горячие клавиши
     document.addEventListener('keydown', (e) => {
@@ -1009,6 +1131,12 @@ class WindowManager {
   // Инициализация экрана перед входом
   async initPreJoinScreen() {
     try {
+      // Проверяем доступность getUserMedia перед попыткой получить превью
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        console.warn('getUserMedia не поддерживается, пропускаем превью камеры');
+        return;
+      }
+
       // Показываем превью камеры в лобби
       const previewVideo = document.getElementById('localVideo');
       if (previewVideo) {
@@ -1023,6 +1151,7 @@ class WindowManager {
       }
     } catch (error) {
       console.warn('Не удалось получить превью камеры:', error);
+      // Не показываем ошибку пользователю на этом этапе
     }
   }
 
@@ -1035,6 +1164,9 @@ class WindowManager {
       this.showNotification('Введите ваш никнейм', 'warning');
       return;
     }
+
+    // Маскот думает
+    this.mascotThinking();
 
     // Блокируем кнопку во время подключения
     const joinBtn = document.getElementById('joinBtn');
@@ -1055,6 +1187,11 @@ class WindowManager {
       joinBtn.disabled = false;
       joinBtn.textContent = originalText;
       this.initPreJoinScreen();
+    } else {
+      // Маскот радуется успешному подключению
+      setTimeout(() => {
+        this.mascotReact('celebrating');
+      }, 500);
     }
     // Если успешно - кнопка останется заблокированной, так как мы переключимся на другой экран
   }
@@ -1451,6 +1588,9 @@ class WindowManager {
         
         // Проигрываем звук уведомления
         this.app.audioSynth.playNotification();
+        
+        // Реакция маскота на новое сообщение
+        this.mascotReact('speaking');
       }
     }
   }
@@ -1504,6 +1644,9 @@ class WindowManager {
     );
     this.app.audioSynth.playJoin();
     this.updateParticipantsList();
+    
+    // Реакция маскота
+    this.mascotReact('celebrating');
     
     // Обновляем режим докладчика если активен
     if (this.currentLayout === 'speaker') {
@@ -1663,12 +1806,12 @@ class WindowManager {
   changeTheme(theme) {
     document.body.className = theme;
     this.currentTheme = theme;
-    localStorage.setItem('nearsap-theme', theme);
+    localStorage.setItem('zloer-theme', theme);
   }
 
   // Загрузка темы из localStorage
   loadTheme() {
-    const savedTheme = localStorage.getItem('nearsap-theme');
+    const savedTheme = localStorage.getItem('zloer-theme');
     if (savedTheme) {
       this.changeTheme(savedTheme);
       document.getElementById('themeSelect').value = savedTheme;
@@ -1855,7 +1998,7 @@ class WindowManager {
         virtualBackground
       };
       
-      localStorage.setItem('nearsap-settings', JSON.stringify(settings));
+      localStorage.setItem('zloer-settings', JSON.stringify(settings));
       console.log('Настройки сохранены:', settings);
       
       this.showNotification('Настройки применены', 'success');
@@ -1884,7 +2027,7 @@ class WindowManager {
     document.getElementById('soundVolumeValue').textContent = '50%';
     
     // Удаляем сохраненные настройки
-    localStorage.removeItem('nearsap-settings');
+    localStorage.removeItem('zloer-settings');
     
     this.showNotification('Настройки сброшены', 'info');
   }
@@ -1893,7 +2036,7 @@ class WindowManager {
   loadSettings() {
     try {
       console.log('Загрузка настроек...');
-      const saved = localStorage.getItem('nearsap-settings');
+      const saved = localStorage.getItem('zloer-settings');
       if (saved) {
         const settings = JSON.parse(saved);
         console.log('Загруженные настройки:', settings);
@@ -2076,7 +2219,7 @@ class WindowManager {
     }
     
     // Сохраняем предпочтение
-    localStorage.setItem('nearsap-layout', layout);
+    localStorage.setItem('zloer-layout', layout);
   }
 
   // Обновление режима докладчика
@@ -2195,8 +2338,8 @@ class WindowManager {
     try {
       const start = Date.now();
       
-      // Простой ping к серверу
-      const response = await fetch('/socket.io/', { 
+      // Используем более безопасный способ проверки сети
+      const response = await fetch('/', { 
         method: 'HEAD',
         cache: 'no-cache'
       });
@@ -2216,6 +2359,7 @@ class WindowManager {
       this.updateNetworkStatus();
       
     } catch (error) {
+      console.warn('Ошибка проверки сети:', error);
       this.networkMonitor.quality = 'poor';
       this.networkMonitor.ping = 999;
       this.updateNetworkStatus();
@@ -2266,7 +2410,7 @@ class WindowManager {
       
       if (this.notificationsEnabled) {
         this.showNotification('Уведомления браузера включены', 'success');
-        this.showBrowserNotification('NearSap', 'Уведомления успешно настроены!');
+        this.showBrowserNotification('Zloer', 'Уведомления успешно настроены!');
       } else {
         this.showNotification('Разрешение на уведомления отклонено', 'warning');
       }
@@ -2279,7 +2423,7 @@ class WindowManager {
       new Notification(title, {
         body: body,
         icon: `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${icon}</text></svg>`,
-        tag: 'nearsap-notification'
+        tag: 'zloer-notification'
       });
     }
   }
@@ -2382,7 +2526,7 @@ class WindowManager {
     }
     
     // Сохраняем настройку
-    localStorage.setItem('nearsap-ui-scale', scale);
+    localStorage.setItem('zloer-ui-scale', scale);
     
     console.log(`Применен масштаб: ${scale}`);
     this.showNotification(`Масштаб интерфейса: ${Math.round(scaleValue * 100)}%`, 'info');
@@ -2391,7 +2535,7 @@ class WindowManager {
   // Загрузка истории чата
   loadChatHistory() {
     try {
-      const saved = localStorage.getItem('nearsap-chat-history');
+      const saved = localStorage.getItem('zloer-chat-history');
       if (saved) {
         this.chatHistory = JSON.parse(saved);
         // Восстанавливаем последние 20 сообщений
@@ -2409,7 +2553,7 @@ class WindowManager {
     try {
       // Сохраняем только последние 50 сообщений
       const historyToSave = this.chatHistory.slice(-50);
-      localStorage.setItem('nearsap-chat-history', JSON.stringify(historyToSave));
+      localStorage.setItem('zloer-chat-history', JSON.stringify(historyToSave));
     } catch (error) {
       console.warn('Ошибка сохранения истории чата:', error);
     }
@@ -2418,7 +2562,7 @@ class WindowManager {
   // Загрузка сохраненного масштаба
   loadUIScale() {
     try {
-      const savedScale = localStorage.getItem('nearsap-ui-scale');
+      const savedScale = localStorage.getItem('zloer-ui-scale');
       if (savedScale) {
         this.applyUIScale(savedScale);
         
@@ -3117,6 +3261,142 @@ class WindowManager {
       }
     }
   }
+
+  // ============================================================================
+  // MASCOT SYSTEM - Интерактивный маскот Zloer Dragon
+  // ============================================================================
+  
+  initMascot() {
+    this.mascot = document.querySelector('.mascot-dragon');
+    
+    if (this.mascot) {
+      // Клик по эмодзи маскоту
+      this.mascot.addEventListener('click', () => {
+        this.handleMascotClick();
+      });
+    }
+
+    // Реакция маскота на события
+    this.setupMascotReactions();
+    
+    console.log('🐲 Zloer Dragon маскот инициализирован!');
+  }
+
+  handleMascotImageClick() {
+    // Анимация для оригинального изображения
+    this.mascotImage.style.animation = 'mascot-image-pulse 0.5s ease-in-out';
+    
+    setTimeout(() => {
+      this.mascotImage.style.animation = 'mascot-image-glow 3s ease-in-out infinite';
+    }, 500);
+
+    // Звуковой эффект
+    if (this.app.audioSynth) {
+      this.app.audioSynth.playLevelUp();
+    }
+
+    // Специальные фразы для оригинального маскота
+    const phrases = [
+      'Оригинальный Zloer Dragon в деле! 🐲⚡',
+      'Кибер-дракон готов к битве! 🔥',
+      'Connect. Play. Zloer - с мощью дракона! 💪',
+      'Цифровая магия активирована! ✨',
+      'Легендарный дракон на страже игр! 🛡️'
+    ];
+    
+    const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+    this.showNotification(randomPhrase, 'success');
+  }
+
+  handleMascotClick() {
+    this.mascotClickCount++;
+    
+    // Обычная реакция
+    this.mascot.classList.add('celebrating');
+    setTimeout(() => {
+      this.mascot.classList.remove('celebrating');
+    }, 1000);
+
+    // Пасхалка при множественных кликах
+    if (this.mascotClickCount >= 10) {
+      this.activateLegendaryMascot();
+      this.mascotClickCount = 0;
+    }
+
+    // Звуковой эффект
+    if (this.app.audioSynth) {
+      this.app.audioSynth.playNotification();
+    }
+
+    // Случайные фразы маскота
+    const phrases = [
+      'Zloer Dragon приветствует тебя! 🐲',
+      'Connect. Play. Zloer! ⚡',
+      'Готов к эпичным играм? 🎮',
+      'Твой цифровой дракон на страже! 🛡️',
+      'Время для легендарных побед! 🏆'
+    ];
+    
+    const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+    this.showNotification(randomPhrase, 'info');
+  }
+
+  activateLegendaryMascot() {
+    this.mascot.classList.add('legendary');
+    this.showNotification('🌟 ЛЕГЕНДАРНЫЙ РЕЖИМ АКТИВИРОВАН! 🌟', 'success');
+    
+    // Убираем эффект через 10 секунд
+    setTimeout(() => {
+      this.mascot.classList.remove('legendary');
+    }, 10000);
+
+    // Специальный звук
+    if (this.app.audioSynth) {
+      this.app.audioSynth.playLevelUp();
+    }
+  }
+
+  setupMascotReactions() {
+    // Реакция на присоединение пользователей
+    this.app.socket.on('user-joined', () => {
+      this.mascotReact('celebrating');
+    });
+
+    // Реакция на сообщения в чате
+    this.app.socket.on('chat-message', () => {
+      this.mascotReact('speaking');
+    });
+
+    // Реакция на звуковые эффекты
+    this.app.socket.on('play-sound', () => {
+      this.mascotReact('excited');
+    });
+  }
+
+  mascotReact(reactionType) {
+    if (!this.mascot) return;
+
+    // Убираем предыдущие классы реакций
+    this.mascot.classList.remove('celebrating', 'thinking', 'speaking', 'excited');
+    
+    // Добавляем новую реакцию
+    this.mascot.classList.add(reactionType);
+    
+    // Убираем через время
+    setTimeout(() => {
+      this.mascot.classList.remove(reactionType);
+    }, reactionType === 'speaking' ? 2000 : 1000);
+  }
+
+  // Маскот думает при загрузке
+  mascotThinking(duration = 3000) {
+    if (!this.mascot) return;
+    
+    this.mascot.classList.add('thinking');
+    setTimeout(() => {
+      this.mascot.classList.remove('thinking');
+    }, duration);
+  }
 }
 
 // ============================================================================
@@ -3195,8 +3475,8 @@ class Soundboard {
 // ============================================================================
 document.addEventListener('DOMContentLoaded', () => {
   window.app = new App();
-  console.log('🎮 NearSap инициализирован и готов к работе!');
-  console.log('Доступ к приложению: window.app');
+  console.log('🎮 Zloer инициализирован и готов к работе!');
+  console.log('Connect. Play. Zloer - Доступ к приложению: window.app');
   console.log('Доступ к UI: window.app.ui');
 });
 

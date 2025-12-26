@@ -7,9 +7,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#007bff">
-    <title>NearSnap - Видеочат для геймеров</title>
+    <title>Zloer - Connect. Play. Zloer</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" href="images/nearsap-logo.svg" type="image/svg+xml">
+    <link rel="icon" href="images/zloer-mascot-original.png" type="image/png">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%2300D4FF'/><stop offset='50%25' style='stop-color:%235B73FF'/><stop offset='100%25' style='stop-color:%239C27B0'/></linearGradient></defs><path d='M20 25 C20 15, 30 5, 45 5 L70 5 C85 5, 95 15, 95 25 L95 50 C95 60, 85 70, 70 70 L45 70 C35 70, 25 60, 25 50 L25 35 C25 30, 30 25, 35 25 L20 25 Z' fill='url(%23g)'/></svg>" type="image/svg+xml">
 </head>
 <body class="theme-default">
@@ -18,10 +18,17 @@
         <div class="login-container">
             <div class="logo">
                 <div class="logo-container">
-                    <img src="images/nearsap-logo.svg" alt="NearSap" class="logo-image">
-                    <h1>NearSap</h1>
+                    <div class="mascot-logo-wrapper">
+                        <div class="mascot-logo-inner has-image"></div>
+                    </div>
+                    <h1>Zloer</h1>
                 </div>
-                <p>Видеочат для геймеров</p>
+                <p>Connect. Play. Zloer</p>
+                <div class="mascot-container">
+                    <div class="mascot-dragon" title="Zloer Dragon - Your gaming companion!">
+                        🐲
+                    </div>
+                </div>
             </div>
             
             <div class="login-form">
@@ -48,7 +55,10 @@
         <div class="header">
             <div class="room-info">
                 <div class="header-logo">
-                    <img src="images/nearsap-logo.svg" alt="NearSap" class="header-logo-image">
+                    <div class="header-mascot-logo-wrapper">
+                        <div class="header-mascot-logo-inner has-image"></div>
+                    </div>
+                    <div class="header-mascot">🐲</div>
                 </div>
                 <div class="room-details">
                     <span id="roomIdDisplay">Комната: </span>
@@ -176,6 +186,17 @@
                     <button id="nudgeAllBtn" class="btn-info">Постучать всем</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Soundboard Panel (will be added by JavaScript) -->
+    <div id="soundboardPanel" class="soundboard-panel" style="display: none;">
+        <h4>🎵 Звуковые эффекты</h4>
+        <div class="soundboard-buttons">
+            <button class="sound-btn" data-sound="gg">GG! 🎉</button>
+            <button class="sound-btn" data-sound="fail">Fail 😅</button>
+            <button class="sound-btn" data-sound="level-up">Level Up! ⬆️</button>
+            <button class="sound-btn" data-sound="horn">Horn 📯</button>
         </div>
     </div>
 
@@ -346,6 +367,9 @@
 
     <!-- Уведомления -->
     <div id="notifications" class="notifications"></div>
+
+    <!-- Typing Indicator (будет добавлен динамически) -->
+    <div id="typingIndicator" class="typing-indicator" style="display: none;"></div>
 
     <!-- Подключение Socket.IO и основного скрипта -->
     <script src="/socket.io/socket.io.js"></script>

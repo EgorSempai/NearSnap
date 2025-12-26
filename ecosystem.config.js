@@ -1,7 +1,7 @@
-// PM2 конфигурация для production
+// PM2 конфигурация для production - Zloer
 module.exports = {
   apps: [{
-    name: 'nearsnap',
+    name: 'zloer',
     script: 'server.js',
     instances: 'max', // Используем все CPU ядра
     exec_mode: 'cluster',
